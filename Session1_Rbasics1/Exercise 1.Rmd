@@ -1,0 +1,132 @@
+---
+title: "Exercise 1"
+author: "R Introduction Workshop"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Questions
+
+## Vectors
+
+**Question 1:**  
+Assign a variable `x` that contains integers `1, 2, 3, 4, 5`. Show the mean of `x`    
+
+**Question 2:**    
+Assign a character vector `fruits` that contains `5` fruit names. Print the 4th fruit to console.
+
+**Question 3:**    
+Assign a vector `vec` that contains `10, "times", TRUE`. What is the class of `vec`?
+
+**Question 4:**    
+Create a vector `sum1to100` with a sequence of integers from 1 to 100. Show the sum of `sum1to100`.
+
+## Matrices
+
+**Question 5:**    
+Create a matrix `mat` with 3 rows and 4 columns, filled with integers from 1 to 12.    
+ Tip: type `?matrix` to console.
+
+**Question 6:**    
+Create a matrix `mat2` with 2 rows, filled with integers from 1 to 12 and *filled by rows*.     
+Tip: type `?matrix` to console.
+
+## Data frames
+
+**Question 7:**    
+Create a data frame `df` with 5 rows, and 3 columns. Columns should contain character, numeric and logical types of data.
+
+**Question 8:**    
+Create a data frame `df2` with 5 rows, and 3 columns. Columns should contain character, numeric and logical types of data. Name the columns `charac`, `number`, `logic` while assigning your data frame.
+
+**Question 9:**   
+Change the column and row names of `df2`.   
+Change the columns to `col1`, `col2`, `col3`.   
+Change the row names to `row1`, `row2`, ... , `row5`
+
+**Question 10:**
+Print `col2` of `df2` to the console. **We'll talk more about this in the next session.**
+
+
+# Solutions
+**Question 1:** Assign a variable `x` that contains integers `1, 2, 3, 4, 5`. Show the mean of `x` 
+```{r}
+x <- c(1, 2, 3, 4, 5)
+# or
+x <- 1:5
+mean(x)
+```
+**Question 2:** Assign a character vector `fruits` that contains `5` fruit names. Print the 4th fruit to console.
+```{r}
+fruits <- c("apple", "banana", "cherry", "dates", "elderberry")
+fruits[4]
+```
+
+**Question 3:** Assign a vector `vec` that contains `10, "times", TRUE`. What is the class of `vec`?
+
+```{r}
+vec <- c(10, "times", TRUE)
+class(vec)
+```
+
+**Question 4:** Create a vector `sum1to100` with a sequence of integers from 1 to 100. Show the sum.
+```{r}
+sum1to100 <- 1:100
+sum(sum1to100)
+```
+
+**Question 5:** Create a matrix `mat` with 3 rows and 4 columns, filled with integers from 1 to 12.    
+```{r}
+mat <- matrix(1:12, nrow=3, ncol=4)
+mat
+```
+
+
+**Question 6:** Create a matrix `mat` with 2 rows, filled with integers from 1 to 12 and *filled by rows*.     
+```{r}
+mat2 <- matrix(1:12, nrow=2, byrow=TRUE)
+mat2
+```
+
+**Question 7:** Create a data frame `df` with 5 rows, and 3 columns. Columns should contain character, numeric and logical types of data.
+```{r}
+df <- data.frame(c("a", "b", "c", "d", "e"), # character
+                 c(1:5), # numeric
+                 c(T, F, T, T, F)) # logical
+df
+```
+
+**Question 8:** Create a data frame `df2` with 5 rows, and 3 columns. Columns should contain character, numeric and logical types of data. Name the columns `charac`, `number`, `logic` while assigning your data frame.
+
+```{r}
+df2 <- data.frame(charac = c("a", "b", "c", "d", "e"), # character
+                  number = c(1:5), # numeric
+                  logic = c(T, F, T, T, F)) # logical
+df2
+```
+
+**Question 9:** Change the column and row names of `df2`. Change the columns to `col1`, `col2`, `col3`.
+Change the row names to `row1`, `row2`, ... , `row5`
+```{r}
+colnames(df2) <- c("col1", "col2", "col3")
+rownames(df2) <- c("row1", "row2", "row3", "row4", "row5")
+```
+
+**Question 10:**
+Print `col2` of `df2` to the console. **We'll talk more about this in the next session.**
+```{r}
+df2["col2"]
+# or another way
+df2$col2
+# or another way 2
+df2[,2]
+# or another way 3
+df2[,"col2"]
+```
+

@@ -1,0 +1,498 @@
+---
+title: "Session 2"
+author: "R Introduction Workshop"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document:   
+    toc: true
+    toc_float: true
+---   
+     
+# Subsetting     
+
+**Subset notation:**   
+ 1. Name of the R object    
+ 2. Square brackets `[ ]`      
+ 3. The index of the element     
+ 
+  * The index tells R which elements from that object to include.   
+  * Every dimension of the R object needs an index! This means a vector, which is a one dimensional R object would require only one index. A two dimensional R object such as a data frame or a matrix would require an index for rows and another for the columns.     
+  * For two dimensional objects, first index (the on the left) in the brackets specifies the rows and the second specifies the columns.    
+
+
+**There are four main ways to subset R objects**   
+ 1. Integers  
+ 2. Blank spaces   
+ 3. Names   
+ 4. Logical vectors (TRUE and FALSE)   
+
+## 1. Integers
+Positive integers behave just like *ij* notation in linear algebra.
+
+Lets work with an example data frame `df` inspired from the Beatles.
+
+```{r}
+df <- data.frame(name=c("John","Paul","George","Ringo"),
+                 birth=c(1940, 1942, 1943, 1940),
+                 insturment=c("guitar", "bass","guitar","drums") )
+df
+
+```
+
+The following gives the element in 2nd row and 3rd column.
+
+```{r}
+df[2,3]
+```
+
+
+### Multiple integers to subset
+
+By giving vectors as indices, we can also get multiple rows and columns, giving multiple elements.
+
+The following gives the elements that are in 2nd and 4th rows and the 3rd column.
+
+```{r}
+df[c(2,4),3]
+```
+
+The following gives the elements that are in 2nd & 4th rows and 2nd & 3rd columns.
+
+```{r}
+df[c(2,4),c(2,3)]
+
+```
+
+When selecting a series of rows and columns in a sequential manner, `:` becomes very handy.    
+(Remember: `start:end` gives us a sequence of integers. For example `1:10` gives a vector of integers from 1 to 10.)
+  
+Select rows from 1 to 3 and columns from 1 to 2.
+
+```{r}
+df[1:3, 1:2]
+```
+
+### Repeating integers
+
+Also repeating input repeats output.   
+```{r}  
+df[c(1,1,1,2,2), 1:3]
+```
+
+Do you see those unusual row numbers? It is because rownames or numbers has to be unique. When rows are repeated, R introduces secondary numbers to deal with this issue in its own way.     
+      
+### Integer `0`      
+
+As an index, **zero will return nothing** from a dimension. This creates an empty object.
+
+```{r}
+df[1:2,0]
+```
+
+### Negative integers
+Negative integers return **everything but** the elements at the specified locations.    
+You cannot use both negative and positive integers in the same dimension     
+
+Exclude rows 2 to 4 and select columns 2 to 3.
+```{r}
+df[-c(2:4), 2:3]
+```
+
+Exclude rows 2 to 4 and select columns 2 to 3.
+```{r}
+df[-c(2:4), 2:3]
+```
+
+## 2. Blank Spaces
+Blank spaces return **everything**
+(i.e., no subsetting occurs on that dimension)
+  
+```{r}
+vec <- c(6,1,3,6,10,5)
+vec[]
+```
+
+Return every element on row 1
+```{r}
+df[1,]
+```
+
+Return every element on column 2
+```{r}
+df[,2]
+```
+
+## 3. Names
+
+If your object has names, you can ask for elements or columns back by name. (We talked about this in the first session)
+
+```{r}
+names(vec) <- c("a","b","c","d","e","f")
+vec
+```
+Now I can call elements in `vec` by their names
+
+```{r}
+vec[c("a","b","d")]
+```
+Same applies to columns and column names
+
+```{r}
+df[ ,"birth"]
+df[ ,c("name","birth")]
+```
+
+## 4. Logical
+
+You can subset with a logical vector of the **same length as the dimension** you are subsetting. Each element that corresponds to a TRUE will be returned.
+
+The following will return 2nd, 4th and 5th elements in `vec`
+```{r}
+vec[c(FALSE,TRUE,FALSE,TRUE,TRUE,FALSE)]
+```
+
+The following will return **2nd, 3rd rows** in `df`
+```{r}
+df[c(FALSE,TRUE,TRUE,FALSE), ]
+```
+
+## Subsetting Lists
+Subsetting lists can get tricky, since a list can contain objects that has one or more dimensions.
+
+```{r}
+lst <- list(c(1,2), TRUE, c("a", "b", "c"))
+lst
+```
+
+What is the difference?
+
+```{r, eval=F}
+lst[c(1,2)]  # outputs a list with 2 objects
+lst[1]       # outputs a list with 1 object
+lst[[1]]     # outputs a vector
+```
+```{r, eval=T}
+lst[c(1,2)]  # outputs a list with 2 objects
+lst[1]       # outputs a list with 1 object
+lst[[1]]     # outputs a vector
+```
+
+Think this way: If list `x` is a train carrying objects, then `x[[5]]` is the *object* in car 5, whereas x[5] is a train with car 5 only.
+
+### Easiest way to subset data frames and lists: `$` sign
+
+The most common syntax for subsetting lists and data frames:
+
+When we have a names list such as
+```{r}
+names(lst) <- c("alpha", "beta", "gamma")
+lst
+```
+
+then we can subset objects with `$`
+```{r}
+lst$alpha
+lst$beta
+lst$gamma
+```
+
+It also works to subset columns of a data frame 
+
+```{r}
+df$birth
+```
+
+A nice shortcut: if you can't remember all the names in your list or columns in your data frame, you can simply tap `Tab` button and you can see the list. 
+
+# R Packages
+
+ * A collection of code and functions written for the R language.   
+    
+ * Usually focuses on a specific task or problem.   
+    
+ * Most of the useful R applications appear in packages.   
+ 
+ * You need to install a package only **one time** using `install.packages()` function.    
+ For example simply type `install.packages("ggplot2")` to the R console to install the `ggplot2` package.
+
+ * **You cannot use a function in a package until you load the package!**
+
+ * If you want to use the functions or data that comes with a certain package, you need to load that package **every time** you start an R session. To load a package you can use the `library()` package.   
+ For example simply type `library(ggplot2)` to the R console to load the `ggplot2` package.
+ 
+ * It is wise to add the packages you will use at the beginning of you R script -- so if you ever share that script with someone else or if you ever forget that certain functions you used in the script belong to a certain package, you can remember which packages you used by looking at the beginning of your code.
+
+## Your turn
+Install these packages : `ggplot2`, `maps`, `RColorBrewer`
+
+```{r}
+# install.packages(c("ggplot2", "maps", "RColorBrewer"))
+library("ggplot2")
+library("maps")
+library("RColorBrewer")
+```
+
+# Diamonds data
+
+
+```{r}
+# assign diamonds
+diamonds <- data.frame(diamonds)
+```
+
+Look at your environent, you can see the `diamonds` data is huge.   
+ 
+ * Use subsetting to look at just the first six rows of diamonds     
+ * Challenge: use subsetting to look at just the last six rows
+ 
+Subsetting first 6 rows is easy
+```{r}
+# first 6 rows
+diamonds[1:6,]
+```
+
+Last 6 is a little tricky
+```{r}
+# last 6 rows
+dim(diamonds)
+ncol(diamonds) # number of columns
+
+#one way
+nrow(diamonds) # number of rows
+nrow(diamonds) - 6
+diamonds[53934:53940,]
+
+# another way
+diamonds[(nrow(diamonds)-6):nrow(diamonds),]
+```
+
+Easiest way to check the first and last 5 rows
+```{r}
+head(diamonds) 
+tail(diamonds) 
+```
+
+
+**View**
+The `View()` function can also help you examine a data set, it opens a spreadsheet like data viewer.
+```{r, eval=F}
+View(diamonds) # notice: Capital V
+```
+
+**Help pages**
+You can open the help page for any R object (including functions) by typing `?` followed by the object's name
+```{r, eval=F}
+?diamonds
+```
+
+
+# Logical tests
+
+## Logical comparisons
+What will these return?
+```{r} 
+1< 3
+1> 3
+c(1, 2, 3, 4, 5) > 3
+```
+
+```{r, echo=F, results='hold'}
+logTable <- data.frame(Operator=c("x > y",
+                                  "x >= y",
+                                  "x < y",
+                                  "x <= y",
+                                  "x == y",
+                                  "x != y",
+                                  "x %in% c(y,z)"),
+                       Tests=c("is x greater than y?",
+                               "is x greater than or equal to y?",
+                               "is x less than y?",
+                               "is x less than or equal to y?",
+                               "is x equal to y?",
+                               "is x not equal to y?",
+                               "is x in the set c(y,z)?"), stringsAsFactors = F)
+
+library(knitr)
+kable(logTable, caption = "Logical Operators")
+```
+
+## `%in%`
+What does this do?
+```{r, eval=F}
+1 %in% c(1, 2, 3, 4)
+1 %in% c(2, 3, 4)
+c(3,4,5,6) %in% c(2, 3, 4)
+```
+
+`%in%` tests whether the object on the left is a member of the group on the right.
+```{r, eval=T}
+1 %in% c(1, 2, 3, 4)
+1 %in% c(2, 3, 4)
+c(3,4,5,6) %in% c(2, 3, 4)
+```
+
+## Boolean operators
+You can combine logical tests with `&`, `|`, `xor`, `!`, `any`, and `all`
+
+```{r, echo=F, results='hold'}
+oprTable <- data.frame(Operator = c("a & b",
+                                    "a | b",
+                                    "xor(a,b)",
+                                    "!(a)",
+                                    "any(a,b,c)",
+                                    "all(a,b,c)"),
+                       Tests = c("both a and b are TRUE",
+                                 "at least one of a and b is TRUE (or)",
+                                 "a is TRUE or b is TRUE, but not both",
+                                 "not a (TRUE goes to FALSE, FALSE goes to TRUE)",
+                                 "at least one of a, b, or c is TRUE",
+                                 "each of a, b, and c is TRUE" ), stringsAsFactors = F)
+
+kable(oprTable, caption = "Boolean Operators")
+
+```
+
+
+### Your turn
+
+```{r}
+w <- c(-1, 0, 1)
+x <- c(5, 15)
+y <- "February"
+z <- c("Monday", "Tuesday", "Friday")
+```
+
+**Questions**   
+
+ * Is w positive?    
+ * Is x greater than 10 and less than 20? Is object y the word February?    
+ * Is every value in z a day of the week?     
+ 
+
+**Common mistakes**
+```{r, eval=F}
+x > 10 & < 20
+y = "February"
+all(z == "Monday" | "Tuesday" | "Wednesday"...)
+```
+
+
+# Logical subsetting
+
+Combining logical tests with subsetting is a very powerful technique! It is very commonly used to subset, clean and manipulate data.
+```{r}
+x_zeroes <- diamonds$x == 0
+head(x_zeroes)
+```
+
+What will this return?
+```{r}
+diamonds[x_zeroes, ]
+```
+
+## Saving results
+
+This will print to screen
+```{r}
+diamonds[diamonds$x > 10, ]
+```
+
+
+This will save to new data frame
+```{r}
+big <- diamonds[diamonds$x > 10, ]
+```
+
+
+This will overwrite the existing data frame. **Dangerous! Don't do it if you don't have to! Think twice!**
+```{r, eval=F}
+diamonds <- diamonds[diamonds$x < 10,]
+```
+
+# Missing values  
+Typically removing the entire row because of one error is overkill.
+Better to selectively replace problem values with missing values.
+In R, missing values are indicated by `NA`
+
+## NA Behavior   
+
+ * Missing values propagate   
+ * Use `is.na()` to check for missing values    
+ 
+```{r} 
+a <- c(1, NA)
+a == NA
+is.na(a)
+```
+
+ * Many functions (e.g. `sum` and `mean`) have `na.rm` argument to remove missing values prior to computation.
+ 
+```{r}
+b <- c(1, 2, 3, 4, NA)
+sum(b)
+sum(b, na.rm = TRUE)
+```
+
+## Assigning `NA`
+You can use subset notation with <- to change individual values within an object.
+Here's an example with `diamonds`
+
+Our x-y plot from `diamonds` before removing outliers
+```{r}
+qplot(x, y, data = diamonds)
+```
+
+**Now, let's remove outliers!**
+
+Let's start figuring out what's wrong with `x`.
+```{r}
+summary(diamonds$x)
+```
+
+Minimum of `x` is zero?! But `x` is supposed to be the lenght of the diamond, it can't be `0`. Afterall, a diamond is a 3D object in real life!
+
+How many zeros does `x` have?
+```{r}
+diamonds$x[diamonds$x == 0]
+```
+
+Ok not that many, we can assign `NA`s to `0`s to let `qplot` know that these are missing values
+```{r}
+diamonds$x[diamonds$x == 0] <- NA  
+```
+ 
+Now `0`s should be gone from the `Min.` and we should have `NA`s
+```{r}
+summary(diamonds$x)
+```
+
+
+Now let's clean `y`!
+```{r}
+summary(diamonds$y)
+```
+
+Again, y shouldn't be `0` because it's the width. So we can assign `NA` to `0`s to let `qplot` know that these are missing values!
+```{r}
+diamonds$y[diamonds$y == 0] <- NA
+```
+
+Some of the `y` values are really large compared to `x`. Probably some of those are outliers as well.
+```{r}
+y_big <- diamonds$y > 20 
+diamonds$y[y_big] <- NA
+```
+
+Now the outliers are assigned as NA!
+```{r}
+summary(diamonds$y)
+```
+
+Let's look at the plot once more with _relatively clean data_
+```{r}
+qplot(x, y, data = diamonds)
+```
+
+Clever `qplot` removed the missing values from our plot!
+
+

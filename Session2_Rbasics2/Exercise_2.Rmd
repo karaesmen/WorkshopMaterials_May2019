@@ -1,0 +1,257 @@
+---
+title: "Exercise 2"
+author: "R Introduction Workshop"
+date: '`r format(Sys.Date(), "%B %d, %Y")`'
+output: 
+  html_document:
+    toc: true
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Questions
+
+For this week's exercise we will work with `month.name`, a character vector of month names, `LETTERS`a character vector of capital letters and `iris` dataset, that gives the measurements in centimeters of the variables sepal length and width and petal length and width, respectively, for 50 flowers from each of 3 species of iris. All these data come with base R. For more information execute `?month.name` or `?iris`. To load `iris` to your R environment go:
+
+```{r}
+data(iris)
+head(iris)
+```
+
+## Subsetting vectors
+
+**Question 1:**  
+Using the `month.name` vector, show the months of spring "March", "April", "May" using **positive integers**, **negative integers** and **logical** (`TRUE` or `FALSE`).     
+
+**Question 2:**    
+Assign seasons with the number of the month to their respective months as element names. *Remember: if you do not assign unique names to your months, subsetting will be problematic.*  i.e Assign "winter1" to "January", "winter2" to"February" and "winter12" to "December"; "spring3" to "March" etc.
+
+**Question 3:**  
+After naming `month.name`, subset it for just spring months using the names you assigned for those months.
+
+**Question 4:**     
+A more advanced way to subset character vectors is using the `grep()` or `grepl()` functions. Look at the help file `?grep`, somethings might be confusing, just ignore them and try to understand how you can use `grep()` or `grepl()` for getting the months of spring. Try:
+
+```{r, eval=F}
+grep("Ma", month.name)
+grepl("Ma", month.name)
+month.name[grep("Ma", month.name)]
+month.name[grepl("Ma", month.name)]
+```
+
+Do you see what these functions are doing, what is their output? Can you now use `grep()` and `names()` to get the months of spring?
+
+**Question 5:**    
+Subset `month.name` for spring months, "March", "April", "May" , using the logical operator `%in%`.
+
+## Subsetting a matrix
+
+**Question 6:**    
+Create a  matrix `MatLet` with 6 rows and 6 columns, fill it with `LETTERS`. Tip: Get help with `?matrix`.    
+Are you getting a message? Is it an error or a warning? What does it mean?      
+
+**Question 7:**    
+Subset `MatLet` for letters "A", "B", "F" one by one using integers for rows and columns. Print `MatLet` to your console to get the indices.
+
+**Question 8:**    
+Subset `MatLet` for letters "A", "B", "F" with multiple integers. Do you remember how R generates a matrix from a vector? How is this different than a data frame?
+
+**Question 9:**
+Subset `MatLet` for letters "A", "B", "F" using logical subsetting with `%in%`.
+
+## Subsetting a data frame
+   
+**Question 10:**  
+Show the number of rows and columns of the `iris` dataset and show the column names.    
+
+**Question 11:**    
+What data type are `iris`' columns?
+
+**Question 12:**    
+Show the mean `Sepal.Length`. Use column name, integer, and `$` to get the column.
+
+**Question 13:**
+Show the mean `Sepal.Length` for each iris species.
+
+**Question 14:**
+Subset `iris` for *Iris setosa* and assign it to a new variable called `setosa`. Show the minimum, 1st quantile,  median,  mean, 3rd quantile and maximum values of `Sepal.Length`, `Sepal.Width`, `Petal.Length` and `Petal.Width` for *Iris setosa*.
+
+**Question 15:**
+Subset `iris` for *Iris setosa* **and** *Iris virginica*, assign it to a new variable called `setosa_virginica`. Show the minimum, 1st quantile,  median,  mean, 3rd quantile and maximum values of `Sepal.Length`, `Sepal.Width`, `Petal.Length` and `Petal.Width` for *Iris setosa* and *Iris virginica*.
+
+**Question 16:**
+Change the class type of `Species` to character.
+
+# Solutions
+
+**Question 1:** Using the `month.name` vector, show the months of spring "March", "April", "May" using **positive integers**, **negative integers** and **logical** (`TRUE` or `FALSE`).   
+
+```{r, eval=F}
+month.name[3:5] # positive integer
+month.name[-c(1,2,6:12)] # negaitve integer
+month.name[c(F,F,T,T,T,F,F,F,F,F,F,F,F)] # logical
+```
+
+Also to make life easier, one can use the `rep()` function, see `?rep()` for details.
+
+```{r, eval=F}
+month.name[c(rep(F,2),rep(T,3),rep(F,6))]
+```
+
+**Question 2:** Assign seasons with the number of the month to their respective months as element names. *Remember: if you do not assign unique names to your months, subsetting will be problematic.*  i.e Assign "winter1" to "January", "winter2" to"February" and "winter12" to "December"; "spring3" to "March" etc.  
+
+```{r}
+names(month.name) <- c("winter1", "winter2",
+                       "spring3", "spring4",  "spring5",
+                       "summer6",  "summer7",  "summer8",
+                       "fall9",    "fall10",   "fall11",
+                       "winter12")
+```
+
+Or we can make our lives easier by using `paste()` or `paste0()` function. Execute `paste0("winter", 1:2)` and `paste0("spring", 3:5)`, do you see what the `paste0` function is doing? By concatenating several `paste0` outputs we can then easily assign names.
+
+```{r}
+names(month.name) <- c(paste0("winter", 1:2), 
+                       paste0("spring", 3:5), 
+                       paste0("summer", 6:8), 
+                       paste0("fall", 9:11), 
+                       "winter12")
+```
+
+**Question 3:** After naming `month.name`, subset it for just summer months.
+```{r}
+month.name[c("summer6", "summer7", "summer8")]
+#or we can use the paste0 function again
+month.name[paste0("summer", 6:8)]
+```
+
+**Question 4:** Can you now use `grep()` and names to get the months of spring?
+```{r}
+month.name[grep("spring", names(month.name))]
+```
+
+
+**Question 5:** Subset `month.name` for spring months, using the logical operator `%in%`.
+
+```{r}
+month.name[month.name %in% c("March", "April", "May")]
+```
+
+**Question 6:** Create a  matrix `MatLet` with 6 rows and 6 columns, fill it with `LETTERS`.     
+```{r}
+MatLet <- matrix(LETTERS, nrow=6, ncol=6)
+```
+Warning messsage indicates that the number of elements in `LETTERS` is less than the number of cells in `MatLet` which has `6x6=36` cells. Therefore the elements of `LETTERS` are recycled, duplicating some of the letters. 
+
+**Question 7:** Subset `MatLet` for letters "A", "B", "F" using integers for rows and columns. Print `MatLet` to your console to get the indices.
+```{r}
+MatLet
+```
+
+
+```{r, eval=F}
+MatLet[1,1] # A
+MatLet[3,5] # A
+MatLet[2,1] # B
+MatLet[4,5] # B
+MatLet[6,1] # F
+MatLet[2,6] # F
+```
+**Question 8:** Subset `MatLet` for letters "A", "B", "F" with multiple integers. Do you remember how R generates a matrix from a vector? How is this different from a data frame?
+
+```{r}
+MatLet[c(1,  2,  6, 27, 28, 32)]
+```
+A matrix chops up (and recycles, if necessary) a vector to fill the matrix for the defined number of rows and columns. We can still subset elements of a matrix with one integer (or a logical vector) by the order they were filled in the matrix. A data frame behaves more like a list, and giving only one integer will give that specific column for all rows. If you want to subset your data frame for certain cells/elements you need to specify both the rows and the columns. 
+
+**Question 9:**    
+Subset `MatLet` for letters "A", "B", "F" using logical subsetting with `%in%`.
+```{r}
+MatLet[MatLet %in% c("A", "B", "F")]
+```
+Again, this will only work this way for a matrix structure. And not a data frame.
+
+
+**Question 10:** Show the number of rows and columns of the `iris` dataset.    
+
+```{r}
+dim(iris) # first element is the number of rows and last is the number of columns
+
+# or 
+
+ncol(iris)
+nrow(iris)
+colnames(iris)
+```
+**Question 11:** What data type are the `iris`' columns?
+```{r, eval=F}
+# long way
+class(iris$Sepal.Length)
+class(iris$Sepal.Width)
+class(iris$Petal.Length)
+class(iris$Petal.Width)
+class(iris$Species)
+```
+```{r}
+# short way
+?str
+str(iris)
+```
+
+**Question 12:** Show the mean `Sepal.Length`.  
+
+```{r, eval=F}
+mean(iris$Sepal.Length)
+#or
+mean(iris[,"Sepal.Length"])
+# or
+mean(iris[,1])
+#or
+mean(iris[,-(2:5)])
+```
+
+```
+[1] 5.843333
+```
+
+
+**Question 13:** Show the mean `Sepal.Length` for each iris species.
+```{r, eval=F}
+# see the iris species in the data frame
+levels(iris$Species)
+
+mean(iris$Sepal.Length[iris$Species=="setosa"])
+mean(iris$Sepal.Length[iris$Species=="versicolor"])
+mean(iris$Sepal.Length[iris$Species=="virginica"])
+
+# or
+mean(iris[iris$Species=="setosa", "Sepal.Length"])
+mean(iris[iris$Species=="versicolor", "Sepal.Length"])
+mean(iris[iris$Species=="virginica", "Sepal.Length"])
+
+```
+
+**Question 14:** Subset `iris` for *Iris setosa* and assign it to a new variable called `setosa`. Show the minimum, 1st quantile,  median,  mean, 3rd quantile and maximum values of `Sepal.Length`, `Sepal.Width`, `Petal.Length` and `Petal.Width` for *Iris setosa*.
+```{r}
+setosa <- iris[iris$Species == "setosa",]
+summary(setosa)
+```
+
+**Question 15:** Subset `iris` for *Iris setosa* and *Iris virginica*, assign it to a new variable called `setosa_virginica`. Show the minimum, 1st quantile,  median,  mean, 3rd quantile and maximum values of `Sepal.Length`, `Sepal.Width`, `Petal.Length` and `Petal.Width` for *Iris setosa* and *Iris virginica*.
+```{r}
+setosa_virginica <- iris[iris$Species == "setosa" | iris$Species == "virginica",]
+#or
+setosa_virginica <- iris[iris$Species %in% c("setosa", "virginica"),]
+
+summary(setosa_virginica)
+```
+
+**Question 16:** Change the class type of `Species` to character.
+```{r}
+class(iris$Species)
+iris$Species <- as.character(iris$Species)
+class(iris$Species)
+```
+
